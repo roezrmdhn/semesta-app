@@ -25,11 +25,13 @@ use Illuminate\Support\Facades\Http;
 // Route::group(['middleware' => 'guest'], function () {
 
 Route::get('/', [HomeController::class, 'home']);
-Route::get('dashboard', function () {
-	$response = Http::get('http://localhost:3000/transactions/charts');
+Route::get('dashboard', function (Request $request) {
+	$bulanSelect = $request->input('bulanSelect', 1); // Defaultnya 1 (Januari) jika tidak ada di URL
+	$response = Http::get('http://localhost:3000/transactions/charts?month=' . $bulanSelect);
 	$data = $response->json();
-	return view('dashboard', ['data' => $data]);
+	return view('dashboard', ['data' => $data, 'bulanSelect' => $bulanSelect]);
 })->name('dashboard');
+
 
 Route::get('billing', function () {
 	return view('billing');
