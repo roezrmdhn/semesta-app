@@ -2,7 +2,15 @@
 
 @section('content')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
+        #outletSelect {
+            width: 290px;
+            height: 100%;
+            border: 1px solid #ccc;
+        }
+
         #daterange {
             width: 190px;
             border: 1px solid #ccc;
@@ -111,10 +119,16 @@
 
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="outletSelect">Pilih Outlet:</label>
                                 <select id="outletSelect" class="form-control" multiple>
                                     <option value="semua" selected>Semua Outlet</option>
+                                </select>
+                            </div> --}}
+                            <div class="form-group">
+                                <label for="outletSelect">Pilih Outlet:</label>
+                                <select id="outletSelect" class="outletSelect" name="outlet[]" multiple="multiple">
+                                    <option value="Pilih Outlet" disabled>Pilih Outlet</option>
                                 </select>
                             </div>
 
@@ -135,6 +149,7 @@
                             <p id="countdown" class="text-small text-muted" style="font-size: 11px;"></p>
                         </div>
                     </div>
+
                     <p class="text-sm">
                         <span class="font-weight-bold"></span> September 2023
                     </p>
@@ -153,6 +168,11 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.outletSelect').select2();
+        });
+    </script>
     <script>
         // Ambil data respons
         var responseData = {!! json_encode($data) !!};
