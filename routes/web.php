@@ -26,7 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', [HomeController::class, 'home']);
 	Route::get('/dashboard', function (Request $request) {
 		$bulanSelect = $request->input('bulanSelect', 10); // Defaultnya 1 (Januari) jika tidak ada di URL
-		$response = Http::get('http://localhost:3000/transactions/charts?month=' . $bulanSelect);
+		$response = Http::get('http://8.219.80.74:3000/transactions/charts?month=' . $bulanSelect);
 		$data = $response->json();
 		return view('dashboard', ['data' => $data, 'bulanSelect' => $bulanSelect]);
 	})->name('dashboard');
