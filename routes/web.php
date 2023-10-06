@@ -22,16 +22,15 @@ use Illuminate\Support\Facades\Http;
 */
 
 
-// Route::group(['middleware' => 'guest'], function () {
-
-Route::get('/', [HomeController::class, 'home']);
-Route::get('dashboard', function (Request $request) {
-	$bulanSelect = $request->input('bulanSelect', 1); // Defaultnya 1 (Januari) jika tidak ada di URL
-	$response = Http::get('http://localhost:3000/transactions/charts?month=' . $bulanSelect);
-	$data = $response->json();
-	return view('dashboard', ['data' => $data, 'bulanSelect' => $bulanSelect]);
-})->name('dashboard');
-
+Route::group(['middleware' => 'auth'], function () {
+	Route::get('/', [HomeController::class, 'home']);
+	Route::get('/dashboard', function (Request $request) {
+		$bulanSelect = $request->input('bulanSelect', 10); // Defaultnya 1 (Januari) jika tidak ada di URL
+		$response = Http::get('http://localhost:3000/transactions/charts?month=' . $bulanSelect);
+		$data = $response->json();
+		return view('dashboard', ['data' => $data, 'bulanSelect' => $bulanSelect]);
+	})->name('dashboard');
+});
 
 Route::get('billing', function () {
 	return view('billing');
@@ -75,16 +74,16 @@ Route::get('/login', function () {
 
 
 
-Route::group(['middleware' => 'guest'], function () {
-	Route::get('/register', [RegisterController::class, 'create']);
-	Route::post('/register', [RegisterController::class, 'store']);
-	Route::get('/login', [SessionsController::class, 'create']);
-	Route::post('/session', [SessionsController::class, 'store']);
-	Route::get('/login/forgot-password', [ResetController::class, 'create']);
-	Route::post('/forgot-password', [ResetController::class, 'sendEmail']);
-	Route::get('/reset-password/{token}', [ResetController::class, 'resetPass'])->name('password.reset');
-	Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
-});
+// Route::group(['middleware' => 'guest'], function () {
+Route::get('/register', [RegisterController::class, 'create']);
+Route::post('/register', [RegisterController::class, 'store']);
+Route::get('/login', [SessionsController::class, 'create']);
+Route::post('/session', [SessionsController::class, 'store']);
+Route::get('/login/forgot-password', [ResetController::class, 'create']);
+Route::post('/forgot-password', [ResetController::class, 'sendEmail']);
+Route::get('/reset-password/{token}', [ResetController::class, 'resetPass'])->name('password.reset');
+Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
+// });
 
 Route::get('/login', function () {
 	return view('session/login-session');

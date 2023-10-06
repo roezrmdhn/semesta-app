@@ -1,30 +1,6 @@
 @extends('layouts.user_type.auth')
 
 @section('content')
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <style>
-        #outletSelect {
-            width: 290px;
-            height: 100%;
-            border: 1px solid #ccc;
-        }
-
-        #daterange {
-            width: 190px;
-            border: 1px solid #ccc;
-        }
-
-        #bulanSelect {
-            width: 140px;
-        }
-
-        #tahunSelect {
-            width: 140px;
-        }
-    </style>
-
     <div class="row">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
@@ -165,12 +141,13 @@
     </div>
 @endsection
 @push('dashboard')
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('.outletSelect').select2();
+            $('.outletSelect').select2(
+                //     {
+                //     theme: 'bootstrap-5'
+                // }
+            );
         });
     </script>
     <script>
@@ -472,6 +449,4 @@
             document.getElementById("bulanForm").submit();
         });
     </script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 @endpush
