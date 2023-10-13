@@ -25,11 +25,22 @@ use Illuminate\Support\Facades\Http;
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', [HomeController::class, 'home']);
 	Route::get('/dashboard', function (Request $request) {
-		$bulanSelect = $request->input('bulanSelect', 10); // Defaultnya 1 (Januari) jika tidak ada di URL
+		$bulanSelect = $request->input('bulanSelect', 10); // Defaultnya 1 (Januari)
 		$response = Http::get('http://8.219.80.74:3000/transactions/charts?month=' . $bulanSelect);
 		$data = $response->json();
 		return view('dashboard', ['data' => $data, 'bulanSelect' => $bulanSelect]);
 	})->name('dashboard');
+
+	Route::get('/semua', function (Request $request) {
+		$dateStart = $request->input('dateStart', '2023-10-01');
+		$dateEnd = $request->input('dateEnd', '2023-10-13');
+		$outletSelect = $request->input('outletSelect', ['904921']);
+		$outletSelect = implode('&outlets=', $outletSelect);
+		$response = Http::get('http://8.219.80.74:3000/transactions/charts?start=' . $dateStart . '&end=' . $dateEnd . '&outlets=' . $outletSelect);
+		$data = $response->json();
+		// dd($response);
+		return view('semua', ['data' => $data, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'outletSelect' => $outletSelect]);
+	})->name('semua');
 });
 
 Route::get('billing', function () {
