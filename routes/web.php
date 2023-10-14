@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Http;
 */
 
 
-Route::group(['middleware' => 'auth'], function () {
+// Route::group(['middleware' => 'auth'], function () {
 	Route::get('/', [HomeController::class, 'home']);
 	Route::get('/dashboard', function (Request $request) {
 		$bulanSelect = $request->input('bulanSelect', 10); // Defaultnya 1 (Januari)
@@ -41,7 +41,7 @@ Route::group(['middleware' => 'auth'], function () {
 		// dd($response);
 		return view('semua', ['data' => $data, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'outletSelect' => $outletSelect]);
 	})->name('semua');
-});
+// });
 
 Route::get('billing', function () {
 	return view('billing');
