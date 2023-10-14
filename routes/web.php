@@ -43,6 +43,10 @@ use Illuminate\Support\Facades\Http;
 	})->name('semua');
 // });
 
+Route::get('/dygraph', function (Request $request) {
+    return view('dygraph');
+});
+
 Route::get('billing', function () {
 	return view('billing');
 })->name('billing');
