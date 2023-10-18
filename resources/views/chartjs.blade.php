@@ -2,7 +2,7 @@
 @section('content')
     <style>
         #outletSelect {
-            width: 1100px;
+            width: 700px;
             height: 100%;
             border: 1px solid #ccc;
         }
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-12">
+        <div class="col-lg-16">
             <div class="card z-index-2">
                 <div class="card-header pb-0">
                     <h6>Sales overview</h6>
@@ -30,30 +30,28 @@
                                 <select id="outletSelect" class="outletSelect" name="outlet[]" multiple="multiple">
                                     <option value="Pilih Outlet" disabled>Pilih Outlet</option>
                                 </select>
+
                             </div>
                         </div>
-                        <div class="col-md-2 mt-4"></div>
-                        <div class="col-md-2 mt-4"></div>
-                        <div class="col-md-2 mt-4"></div>
-                        <div class="col-md-2 mt-4"></div>
-                        <div class="col-md-2 mt-4"></div>
-                        <div class="col-md-2 mt-4"></div>
-                        <div class="col-md-2 mt-4"></div>
-                        <div class="col-md-2 mt-4"></div>
-                        <div class="col-md-2">
-                            <button id="resetButton" class="btn bg-gradient-danger"><i class="fa fa-undo"
-                                    aria-hidden="true"></i>Reset</button>
+                        <div class="col-md-1 mt-4"></div>
+                        <div class="col-md-1 mt-4"></div>
+                        <div class="col-md-1 mt-4"></div>
+                        <div class="col-md-1 mt-4"></div>
+                        {{-- <div class="col-md-1 mt-4"></div> --}}
+                        <div class="col-md-2 mt-4">
+                            <button id="resetButton" name="resetButton" class="btn bg-gradient-danger"><i class="fa fa-undo"
+                                    aria-hidden="true"></i> Reset</button>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2 mt-4">
                             <button id="filterButton" class="btn bg-gradient-primary"><i class="fa fa-filter"
-                                    aria-hidden="true"></i>Filter</button>
+                                    aria-hidden="true"></i> Filter</button>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card-body p-3">
                 <div class="chart">
-                    <canvas id="chart-line" class="chart-canvas" height="300"></canvas>
+                    <canvas id="chart-line" class="chart-canvas" height="500"></canvas>
                 </div>
             </div>
         </div>
@@ -220,6 +218,7 @@
                             },
                             ticks: {
                                 display: true,
+                                // stepSize: 50000000,
                                 padding: 10,
                                 color: '#b2b9bf',
                                 font: {
@@ -239,6 +238,8 @@
                                 borderDash: [5, 5],
                             },
                             ticks: {
+                                // maxTicksLimit: 10,
+                                sampleSize: 10,
                                 display: true,
                                 padding: 10,
                                 color: '#b2b9bf',
@@ -255,14 +256,5 @@
                 },
             });
         }
-    </script>
-    <script>
-        var resetButton = document.getElementById("resetButton");
-        resetButton.addEventListener("click", function() {
-            var outletSelect = document.getElementById("outletSelect");
-            for (var i = 0; i < outletSelect.options.length; i++) {
-                outletSelect.options[i].selected = false;
-            }
-        });
     </script>
 @endpush
