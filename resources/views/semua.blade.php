@@ -25,9 +25,7 @@
                                     <select id="outletSelect" class="outletSelect" name="outletSelect[]"
                                         multiple="multiple">
                                         <option value="Pilih Outlet" disabled>Pilih Outlet</option>
-                                        <option value="923456">009 Outlet Gramapuri Persada Cikarang</option>
-                                        <option value="959714">018 Outlet Cileungsi</option>
-                                        <option value="904921">0015 Outlet Nologaten Jogja</option>
+
                                     </select>
                                 </div>
                             </div>
@@ -43,7 +41,7 @@
                         </div>
                     </div>
                     <p class="text-sm">
-                        <span class="font-weight-bold"></span> September 2023
+                        {{-- <span class="font-weight-bold"></span> September 2023 --}}
                     </p>
                 </div>
                 <div class="card-body p-3">
@@ -56,6 +54,98 @@
     </div>
 @endsection
 @push('dashboard')
+    <script>
+        // Data outlet
+        var outlets = [{
+                "name": "0011 Outlet Cilacap",
+                "id": 953202
+            },
+            {
+                "name": "0012 Outlet Metro Lampung",
+                "id": 950389
+            },
+            {
+                "name": "0013 Outlet Tegal",
+                "id": 895233
+            },
+            {
+                "name": "0014 Outlet Ungaran, Semarang",
+                "id": 955300
+            },
+            {
+                "name": "0015 Outlet Nologaten Jogja",
+                "id": 904921
+            },
+            {
+                "name": "004 Outlet Bogor Sentraland Paradise",
+                "id": 896099
+            },
+            {
+                "name": "005 Outlet Lubuklinggau",
+                "id": 925214
+            },
+            {
+                "name": "006 Cianjur",
+                "id": 929763
+            },
+            {
+                "name": "006 Outlet Cianjur",
+                "id": 929766
+            },
+            {
+                "name": "006 Outlet Solokpandan, Cianjur",
+                "id": 924793
+            },
+            {
+                "name": "009 Outlet Gramapuri Persada Cikarang",
+                "id": 923456
+            },
+            {
+                "name": "018 Outlet Cileungsi",
+                "id": 959714
+            },
+            {
+                "name": "019 Outlet Tanah Merdeka",
+                "id": 957601
+            },
+            {
+                "name": "Outlet Kandis, Riau",
+                "id": 927583
+            },
+            {
+                "name": "Outlet Sumba Barat",
+                "id": 928201
+            },
+            {
+                "name": "percobaan",
+                "id": 897750
+            },
+            {
+                "name": "Pusat",
+                "id": 926797
+            },
+            {
+                "name": "Pusat",
+                "id": 886963
+            },
+            {
+                "name": "training",
+                "id": 895565
+            }
+        ];
+
+        // Ambil elemen select
+        var outletSelect = document.getElementById('outletSelect');
+
+        // Loop melalui data outlet dan tambahkan opsi ke elemen select
+        outlets.forEach(function(outlet) {
+            var option = document.createElement('option');
+            option.value = outlet.id; // Gunakan ID sebagai nilai
+            option.text = outlet.name;
+            outletSelect.appendChild(option);
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
             $('.outletSelect').select2();
@@ -78,6 +168,54 @@
         var dateStart = document.getElementById('dateStart');
         var dateEnd = document.getElementById('dateEnd');
         var outletSelect = document.getElementById('outletSelect');
+        var filterButton = document.getElementById('filterButton');
+
+        // Fungsi untuk memperbarui URL
+        function updateURL() {
+            var selectedDateStart = dateStart.value;
+            var selectedDateEnd = dateEnd.value;
+            var selectedOutlets = Array.from(outletSelect.selectedOptions).map(option => option.value);
+
+            // Bangun URL dengan parameter yang sesuai
+            var baseUrl = window.location.origin + window.location.pathname;
+            var url = baseUrl + '?dateStart=' + selectedDateStart + '&dateEnd=' + selectedDateEnd;
+            if (selectedOutlets.length > 0) {
+                url += '&outletSelect[]=' + selectedOutlets.join('&outletSelect[]=');
+            }
+
+            // Setel URL
+            window.history.replaceState(null, null, url);
+        }
+
+        // Tambahkan event listener untuk pembaruan URL saat filter diterapkan
+        filterButton.addEventListener('click', function(e) {
+            e.preventDefault(); // Hentikan perilaku bawaan form
+
+            // Perbarui URL
+            updateURL();
+
+            // Sekarang Anda dapat mengirim formulir jika diperlukan
+            document.getElementById('bulanForm').submit();
+        });
+
+        // Tambahkan event listener untuk memantau perubahan pada elemen-elemen
+        dateStart.addEventListener('change', updateURL);
+        dateEnd.addEventListener('change', updateURL);
+        outletSelect.addEventListener('change', updateURL);
+
+        // Fungsi untuk memeriksa parameter dalam URL dan memperbarui elemen sesuai dengan itu
+        function updateFormFromURL() {
+            var params = new URLSearchParams(window.location.search);
+            dateStart.value = params.get('dateStart') || '';
+            dateEnd.value = params.get('dateEnd') || [];
+            var selectedOutlets = params.getAll('outletSelect[]');
+            for (var i = 0; i < outletSelect.options.length; i++) {
+                outletSelect.options[i].selected = selectedOutlets.includes(outletSelect.options[i].value);
+            }
+        }
+
+        // Panggil fungsi ini untuk memperbarui elemen dari URL saat halaman dimuat
+        updateFormFromURL();
     </script>
     <script>
         window.onload = function() {
