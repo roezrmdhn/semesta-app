@@ -8,10 +8,10 @@
         }
 
         /*
-                                                                                                                                                                                                                                                                                                                                                .chartBox {
-                                                                                                                                                                                                                                                                                                                                                    width: 600px;
-                                                                                                                                                                                                                                                                                                                                                    height: 500px;
-                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                            .chartBox {
+                                                                                                                                                                                                                                                                                                                                                                                                                width: 600px;
+                                                                                                                                                                                                                                                                                                                                                                                                                height: 500px;
+                                                                                                                                                                                                                                                                                                                                                                                                            } */
     </style>
     <div class="container-fluid py-4">
         <div class="row mt-4">
@@ -90,7 +90,7 @@
                             <span class="font-weight-bold">Transactions</span>
                         </p>
                         <p class="text-sm">
-                            <span class="font-weight-bold">DAILY</span>
+                            <span class="font-weight-bold">DATE</span>
                         </p>
                         <div>
                             <div class="chart">
@@ -109,10 +109,84 @@
                             <span class="font-weight-bold">Sales</span>
                         </p>
                         <p class="text-sm">
-                            <span class="font-weight-bold">DAILY</span>
+                            <span class="font-weight-bold">DATE</span>
                         </p>
                         <div class="chart">
                             <canvas id="chart-line-date-sales" class="chart-canvas" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {{-- </div> --}}
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-lg-6 mb-lg-0 mb-4">
+                <div class="card z-index-2">
+                    <div class="card-body p-3">
+                        <p class="text-sm">
+                            <span class="font-weight-bold">Transactions</span>
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-weight-bold">DAILY</span>
+                        </p>
+                        <div>
+                            <div class="chart">
+                                <canvas id="chart-line-daily" class="chart-canvas" height="400"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-lg-0 mb-4">
+                {{-- <div class="card-header pb-0"> --}}
+                {{-- <h6>Sales overview</h6> --}}
+                <div class="card z-index-2">
+                    <div class="card-body p-3">
+                        <p class="text-sm">
+                            <span class="font-weight-bold">Sales</span>
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-weight-bold">DAILY</span>
+                        </p>
+                        <div class="chart">
+                            <canvas id="chart-line-daily-sales" class="chart-canvas" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
+                {{-- </div> --}}
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-lg-6 mb-lg-0 mb-4">
+                <div class="card z-index-2">
+                    <div class="card-body p-3">
+                        <p class="text-sm">
+                            <span class="font-weight-bold">Transactions</span>
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-weight-bold">HOUR</span>
+                        </p>
+                        <div>
+                            <div class="chart">
+                                <canvas id="chart-line-hour" class="chart-canvas" height="400"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-lg-0 mb-4">
+                {{-- <div class="card-header pb-0"> --}}
+                {{-- <h6>Sales overview</h6> --}}
+                <div class="card z-index-2">
+                    <div class="card-body p-3">
+                        <p class="text-sm">
+                            <span class="font-weight-bold">Sales</span>
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-weight-bold">HOUR</span>
+                        </p>
+                        <div class="chart">
+                            <canvas id="chart-line-hour-sales" class="chart-canvas" height="400"></canvas>
                         </div>
                     </div>
                 </div>
@@ -274,7 +348,12 @@
             myChart = new Chart(ctx2, {
                 type: "line",
                 data: {
-                    labels: responseDataMonthly.labels.map(label => `${label}`),
+                    labels: responseDataMonthly.labels.map(label => {
+                        const date = new Date(label);
+                        return date.toLocaleString('default', {
+                            month: 'short'
+                        });
+                    }),
                     datasets: [{
                         label: "Penjualan",
                         tension: 0.4,
@@ -630,7 +709,12 @@
             myChart4 = new Chart(ctx4, {
                 type: "line",
                 data: {
-                    labels: responseDataMonthlySales.labels.map(label => `${label}`),
+                    labels: responseDataMonthly.labels.map(label => {
+                        const date = new Date(label);
+                        return date.toLocaleString('default', {
+                            month: 'short'
+                        });
+                    }),
                     datasets: [{
                         label: "Penjualan",
                         tension: 0.4,
