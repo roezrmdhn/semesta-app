@@ -8,10 +8,10 @@
         }
 
         /*
-                                                                                                                                                                                                                                                                                                                                        .chartBox {
-                                                                                                                                                                                                                                                                                                                                            width: 600px;
-                                                                                                                                                                                                                                                                                                                                            height: 500px;
-                                                                                                                                                                                                                                                                                                                                        } */
+                                                                                                                                                                                                                                                                                                                                                .chartBox {
+                                                                                                                                                                                                                                                                                                                                                    width: 600px;
+                                                                                                                                                                                                                                                                                                                                                    height: 500px;
+                                                                                                                                                                                                                                                                                                                                                } */
     </style>
     <div class="container-fluid py-4">
         <div class="row mt-4">
@@ -94,7 +94,7 @@
                         </p>
                         <div>
                             <div class="chart">
-                                <canvas id="chart-line-daily" class="chart-canvas" height="400"></canvas>
+                                <canvas id="chart-line-date" class="chart-canvas" height="400"></canvas>
                             </div>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                             <span class="font-weight-bold">DAILY</span>
                         </p>
                         <div class="chart">
-                            <canvas id="chart-line-daily-sales" class="chart-canvas" height="400"></canvas>
+                            <canvas id="chart-line-date-sales" class="chart-canvas" height="400"></canvas>
                         </div>
                     </div>
                 </div>
@@ -130,12 +130,12 @@
     <script>
         var responseDataMonthly = {!! json_encode($dataMonthly) !!};
         var responseDataMonthlySales = {!! json_encode($dataMonthlySales) !!};
-        var responseDataDaily = {!! json_encode($dataDaily) !!};
-        var responseDataDailySales = {!! json_encode($dataDailySales) !!};
+        var responseDataDate = {!! json_encode($dataDate) !!};
+        var responseDataDateSales = {!! json_encode($dataDateSales) !!};
         var allSalesDataMonthly = responseDataMonthly.dataset.map(outlet => outlet.data);
         var allSalesDataMonthlySales = responseDataMonthlySales.dataset.map(outlet => outlet.data);
-        var allSalesDataDaily = responseDataDaily.dataset.map(outlet => outlet.data);
-        var allSalesDataDailySales = responseDataDailySales.dataset.map(outlet => outlet.data);
+        var allSalesDataDate = responseDataDate.dataset.map(outlet => outlet.data);
+        var allSalesDataDateSales = responseDataDateSales.dataset.map(outlet => outlet.data);
         var totalPenjualanMonthly = allSalesDataMonthly.reduce(function(acc, current) {
             return current.map(function(value, index) {
                 return (acc[index] || 0) + value;
@@ -152,20 +152,20 @@
         var totalTransaksiMonthlySales = totalPenjualanMonthlySales.reduce(function(acc, value) {
             return acc + value;
         }, 0);
-        var totalPenjualanDaily = allSalesDataDaily.reduce(function(acc, current) {
+        var totalPenjualanDate = allSalesDataDate.reduce(function(acc, current) {
             return current.map(function(value, index) {
                 return (acc[index] || 0) + value;
             });
         }, []);
-        var totalTransaksiDaily = totalPenjualanDaily.reduce(function(acc, value) {
+        var totalTransaksiDate = totalPenjualanDate.reduce(function(acc, value) {
             return acc + value;
         }, 0);
-        var totalPenjualanDailySales = allSalesDataDailySales.reduce(function(acc, current) {
+        var totalPenjualanDateSales = allSalesDataDateSales.reduce(function(acc, current) {
             return current.map(function(value, index) {
                 return (acc[index] || 0) + value;
             });
         }, []);
-        var totalTransaksiDailySales = totalPenjualanDailySales.reduce(function(acc, value) {
+        var totalTransaksiDateSales = totalPenjualanDateSales.reduce(function(acc, value) {
             return acc + value;
         }, 0);
     </script>
@@ -348,7 +348,7 @@
                     },
                 },
             });
-            var ctx3 = document.getElementById("chart-line-daily").getContext("2d");
+            var ctx3 = document.getElementById("chart-line-date").getContext("2d");
             var gradientStroke1 = ctx3.createLinearGradient(0, 230, 0, 50);
             gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
             gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
@@ -358,7 +358,7 @@
             var outletNamesSet = new Set();
 
             // Loop melalui data outlet
-            responseDataDaily.dataset.forEach(function(outlet) {
+            responseDataDate.dataset.forEach(function(outlet) {
                 var outletName = outlet.label;
 
                 // Periksa apakah nama outlet sudah ada di Set
@@ -372,8 +372,8 @@
                 }
             });
 
-            var allOutletData = responseDataDaily.dataset.map(outlet => outlet.data);
-            var totalPenjualanDaily = allOutletData.reduce(function(acc, current) {
+            var allOutletData = responseDataDate.dataset.map(outlet => outlet.data);
+            var totalPenjualanDate = allOutletData.reduce(function(acc, current) {
                 return current.map(function(value, index) {
                     return (acc[index] || 0) + value;
                 });
@@ -385,10 +385,10 @@
                 selectedOutlets = selectedOptions.map(option => option.value);
                 var filteredData;
                 if (selectedOutlets.includes('semua')) {
-                    filteredData = totalPenjualanDaily;
+                    filteredData = totalPenjualanDate;
                 } else {
                     filteredData = selectedOutlets.map(selectedOutlet => {
-                        var selectedOutletData = responseDataDaily.dataset.find(outlet => outlet
+                        var selectedOutletData = responseDataDate.dataset.find(outlet => outlet
                             .label ===
                             selectedOutlet);
                         return selectedOutletData ? selectedOutletData.data : [];
@@ -451,7 +451,7 @@
             myChart3 = new Chart(ctx3, {
                 type: "line",
                 data: {
-                    labels: responseDataDaily.labels.map(label => `${label}`),
+                    labels: responseDataDate.labels.map(label => `${label}`),
                     datasets: [{
                         label: "Penjualan",
                         tension: 0.4,
@@ -461,7 +461,7 @@
                         borderWidth: 3,
                         backgroundColor: gradientStroke1,
                         fill: true,
-                        data: totalPenjualanDaily,
+                        data: totalPenjualanDate,
                         maxBarThickness: 6
                     }],
                 },
@@ -705,8 +705,8 @@
                 },
             });
 
-            // Daily Transaction
-            var ctx5 = document.getElementById("chart-line-daily-sales").getContext("2d");
+            // Date Transaction
+            var ctx5 = document.getElementById("chart-line-date-sales").getContext("2d");
             var gradientStroke1 = ctx5.createLinearGradient(0, 230, 0, 50);
             gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
             gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
@@ -716,7 +716,7 @@
             var outletNamesSet = new Set();
 
             // Loop melalui data outlet
-            responseDataDailySales.dataset.forEach(function(outlet) {
+            responseDataDateSales.dataset.forEach(function(outlet) {
                 var outletName = outlet.label;
 
                 // Periksa apakah nama outlet sudah ada di Set
@@ -730,7 +730,7 @@
                 }
             });
 
-            var allOutletDataMonthlySales = responseDataDailySales.dataset.map(outlet => outlet.data);
+            var allOutletDataMonthlySales = responseDataDateSales.dataset.map(outlet => outlet.data);
             var totalPenjualanMonthlySales = allOutletDataMonthlySales.reduce(function(acc, current) {
                 return current.map(function(value, index) {
                     return (acc[index] || 0) + value;
@@ -746,7 +746,7 @@
                     filteredData = totalPenjualanMonthlySales;
                 } else {
                     filteredData = selectedOutlets.map(selectedOutlet => {
-                        var selectedOutletData = responseDataDailySales.dataset.find(outlet => outlet
+                        var selectedOutletData = responseDataDateSales.dataset.find(outlet => outlet
                             .label ===
                             selectedOutlet);
                         return selectedOutletData ? selectedOutletData.data : [];
@@ -809,7 +809,7 @@
             myChart5 = new Chart(ctx5, {
                 type: "line",
                 data: {
-                    labels: responseDataDailySales.labels.map(label => `${label}`),
+                    labels: responseDataDateSales.labels.map(label => `${label}`),
                     datasets: [{
                         label: "Penjualan",
                         tension: 0.4,
