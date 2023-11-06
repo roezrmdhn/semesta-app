@@ -51,12 +51,16 @@ Route::get('/semua', function () {
 	$responseMonthlySales = Http::get('http://8.219.80.74:3000/transactions/charts?start=2023-04-20&format=chartjs&type=monthly&total_of=transaction');
 	$responseDate = Http::get('http://8.219.80.74:3000/transactions/charts?start=2023-04-20&format=chartjs&type=daily');
 	$responseDateSales = Http::get('http://8.219.80.74:3000/transactions/charts?start=2023-10-10&format=chartjs&type=daily&total_of=transaction');
+	$responseDaily = Http::get('http://8.219.80.74:3000/transactions/chart-weekly');
+	$responseDailySales = Http::get('http://8.219.80.74:3000/transactions/chart-weekly');
 	$dataMonthly = $responseMonthly->json();
 	$dataMonthlySales = $responseMonthlySales->json();
 	$dataDate = $responseDate->json();
 	$dataDateSales = $responseDateSales->json();
+	$dataDaily = $responseDaily->json();
+	$dataDailySales = $responseDailySales->json();
 	// dd($responseDateSales);
-	return view('chartjs', ['dataMonthly' => $dataMonthly, 'dataMonthlySales' => $dataMonthlySales, 'dataDate' => $dataDate, 'dataDateSales' => $dataDateSales]);
+	return view('chartjs', ['dataMonthly' => $dataMonthly, 'dataMonthlySales' => $dataMonthlySales, 'dataDate' => $dataDate, 'dataDateSales' => $dataDateSales, 'dataDaily' => $dataDaily, 'dataDailySales' => $dataDailySales]);
 });
 
 Route::get('billing', function () {

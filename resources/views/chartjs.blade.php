@@ -8,10 +8,10 @@
         }
 
         /*
-                                                                                                                                                                                                                                                                                                                                                                                                            .chartBox {
-                                                                                                                                                                                                                                                                                                                                                                                                                width: 600px;
-                                                                                                                                                                                                                                                                                                                                                                                                                height: 500px;
-                                                                                                                                                                                                                                                                                                                                                                                                            } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .chartBox {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        width: 600px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        height: 500px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } */
     </style>
     <div class="container-fluid py-4">
         <div class="row mt-4">
@@ -206,10 +206,14 @@
         var responseDataMonthlySales = {!! json_encode($dataMonthlySales) !!};
         var responseDataDate = {!! json_encode($dataDate) !!};
         var responseDataDateSales = {!! json_encode($dataDateSales) !!};
+        var responseDataDaily = {!! json_encode($dataDaily) !!};
+        // var responseDataDailySales = {!! json_encode($dataDailySales) !!};
         var allSalesDataMonthly = responseDataMonthly.dataset.map(outlet => outlet.data);
         var allSalesDataMonthlySales = responseDataMonthlySales.dataset.map(outlet => outlet.data);
         var allSalesDataDate = responseDataDate.dataset.map(outlet => outlet.data);
         var allSalesDataDateSales = responseDataDateSales.dataset.map(outlet => outlet.data);
+        var allSalesDataDaily = responseDataDaily.dataset.map(outlet => outlet.data);
+        // var allSalesDataDailySales = responseDataDailySales.dataset.map(outlet => outlet.data);
         var totalPenjualanMonthly = allSalesDataMonthly.reduce(function(acc, current) {
             return current.map(function(value, index) {
                 return (acc[index] || 0) + value;
@@ -240,6 +244,22 @@
             });
         }, []);
         var totalTransaksiDateSales = totalPenjualanDateSales.reduce(function(acc, value) {
+            return acc + value;
+        }, 0);
+        var totalPenjualanDaily = allSalesDataDaily.reduce(function(acc, current) {
+            return current.map(function(value, index) {
+                return (acc[index] || 0) + value;
+            });
+        }, []);
+        var totalTransaksiDaily = totalPenjualanDaily.reduce(function(acc, value) {
+            return acc + value;
+        }, 0);
+        var totalPenjualanDailySales = allSalesDataDailySales.reduce(function(acc, current) {
+            return current.map(function(value, index) {
+                return (acc[index] || 0) + value;
+            });
+        }, []);
+        var totalTransaksiDailySales = totalPenjualanDailySales.reduce(function(acc, value) {
             return acc + value;
         }, 0);
     </script>
@@ -967,6 +987,91 @@
                     },
                 },
             });
+
+            var ctx6 = document.getElementById("chart-line-daily").getContext("2d");
+            var gradientStroke1 = ctx6.createLinearGradient(0, 230, 0, 50);
+            gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+            gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+            gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
+
+            var allOutletDataDaily = responseDataDaily.dataset.map(outlet => outlet.data);
+            var totalPenjualanDaily = allOutletDataDaily[0]; // Hanya ada satu set data pada dataset
+
+            var myChart6 = new Chart(ctx6, {
+                type: "line",
+                data: {
+                    labels: responseDataDaily.labels,
+                    datasets: [{
+                        label: "Rata-rata penghasilan dalam satu minggu",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#cb0c9f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke1,
+                        fill: true,
+                        data: totalPenjualanDaily.map(value => parseFloat(
+                            value)), // Konversi data string ke float
+                        maxBarThickness: 6
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
         }
     </script>
 @endpush
