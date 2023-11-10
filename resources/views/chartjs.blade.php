@@ -6,12 +6,6 @@
             height: 100%;
             border: 1px solid #ccc;
         }
-
-        /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .chartBox {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        width: 600px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        height: 500px;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } */
     </style>
     <div class="container-fluid py-4">
         <div class="row mt-4">
@@ -988,6 +982,7 @@
                 },
             });
 
+            // Chart Daily
             var ctx6 = document.getElementById("chart-line-daily").getContext("2d");
             var gradientStroke1 = ctx6.createLinearGradient(0, 230, 0, 50);
             gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
@@ -995,14 +990,14 @@
             gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
 
             var allOutletDataDaily = responseDataDaily.dataset.map(outlet => outlet.data);
-            var totalPenjualanDaily = allOutletDataDaily[0]; // Hanya ada satu set data pada dataset
+            var totalPenjualanDaily = allOutletDataDaily[0];
 
             var myChart6 = new Chart(ctx6, {
                 type: "line",
                 data: {
                     labels: responseDataDaily.labels,
                     datasets: [{
-                        label: "Rata-rata penghasilan dalam satu minggu",
+                        label: "Average Daily Transactions",
                         tension: 0.4,
                         borderWidth: 0,
                         pointRadius: 0,
