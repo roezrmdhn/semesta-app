@@ -58,8 +58,7 @@
                 </div>
             </div>
             <div class="col-lg-6 mb-lg-0 mb-4">
-                {{-- <div class="card-header pb-0"> --}}
-                {{-- <h6>Sales overview</h6> --}}
+
                 <div class="card z-index-2">
                     <div class="card-body p-3">
                         <p class="text-sm">
@@ -73,9 +72,10 @@
                         </div>
                     </div>
                 </div>
-                {{-- </div> --}}
+
             </div>
         </div>
+
         <div class="row mt-4">
             <div class="col-lg-6 mb-lg-0 mb-4">
                 <div class="card z-index-2">
@@ -121,7 +121,43 @@
                             <span class="font-weight-bold">Transactions</span>
                         </p>
                         <p class="text-sm">
-                            <span class="font-weight-bold">DAILY</span>
+                            <span class="font-weight-bold">AVG MONTHLY</span>
+                        </p>
+                        <div>
+                            <div class="chart">
+                                <canvas id="chart-line-monthly" class="chart-canvas" height="400"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-lg-0 mb-4">
+
+                <div class="card z-index-2">
+                    <div class="card-body p-3">
+                        <p class="text-sm">
+                            <span class="font-weight-bold">Sales</span>
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-weight-bold">AVG MONTHLY</span>
+                        </p>
+                        <div class="chart">
+                            <canvas id="chart-line-monthly-sales" class="chart-canvas" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-lg-6 mb-lg-0 mb-4">
+                <div class="card z-index-2">
+                    <div class="card-body p-3">
+                        <p class="text-sm">
+                            <span class="font-weight-bold">Transactions</span>
+                        </p>
+                        <p class="text-sm">
+                            <span class="font-weight-bold">AVG DAILY</span>
                         </p>
                         <div>
                             <div class="chart">
@@ -140,7 +176,7 @@
                             <span class="font-weight-bold">Sales</span>
                         </p>
                         <p class="text-sm">
-                            <span class="font-weight-bold">DAILY</span>
+                            <span class="font-weight-bold">AVG DAILY</span>
                         </p>
                         <div class="chart">
                             <canvas id="chart-line-daily-sales" class="chart-canvas" height="400"></canvas>
@@ -158,11 +194,11 @@
                             <span class="font-weight-bold">Transactions</span>
                         </p>
                         <p class="text-sm">
-                            <span class="font-weight-bold">HOUR</span>
+                            <span class="font-weight-bold">AVG HOUR</span>
                         </p>
                         <div>
                             <div class="chart">
-                                <canvas id="chart-line-hour" class="chart-canvas" height="400"></canvas>
+                                <canvas id="chart-line-hourly" class="chart-canvas" height="400"></canvas>
                             </div>
                         </div>
                     </div>
@@ -177,10 +213,10 @@
                             <span class="font-weight-bold">Sales</span>
                         </p>
                         <p class="text-sm">
-                            <span class="font-weight-bold">HOUR</span>
+                            <span class="font-weight-bold">AVG HOUR</span>
                         </p>
                         <div class="chart">
-                            <canvas id="chart-line-hour-sales" class="chart-canvas" height="400"></canvas>
+                            <canvas id="chart-line-hourly-sales" class="chart-canvas" height="400"></canvas>
                         </div>
                     </div>
                 </div>
@@ -201,12 +237,14 @@
         var responseDataDate = {!! json_encode($dataDate) !!};
         var responseDataDateSales = {!! json_encode($dataDateSales) !!};
         var responseDataDaily = {!! json_encode($dataDaily) !!};
+        var responseDataHourly = {!! json_encode($dataHourly) !!};
         // var responseDataDailySales = {!! json_encode($dataDailySales) !!};
         var allSalesDataMonthly = responseDataMonthly.dataset.map(outlet => outlet.data);
         var allSalesDataMonthlySales = responseDataMonthlySales.dataset.map(outlet => outlet.data);
         var allSalesDataDate = responseDataDate.dataset.map(outlet => outlet.data);
         var allSalesDataDateSales = responseDataDateSales.dataset.map(outlet => outlet.data);
         var allSalesDataDaily = responseDataDaily.dataset.map(outlet => outlet.data);
+        var allSalesDataHourly = responseDataHourly.dataset.map(outlet => outlet.data);
         // var allSalesDataDailySales = responseDataDailySales.dataset.map(outlet => outlet.data);
         var totalPenjualanMonthly = allSalesDataMonthly.reduce(function(acc, current) {
             return current.map(function(value, index) {
@@ -256,6 +294,14 @@
         var totalTransaksiDailySales = totalPenjualanDailySales.reduce(function(acc, value) {
             return acc + value;
         }, 0);
+        var totalPenjualanHourly = allSalesDataHourly.reduce(function(acc, current) {
+            return current.map(function(value, index) {
+                return (acc[index] || 0) + value;
+            });
+        }, []);
+        var totalTransaksiHourly = totalPenjualanHourly.reduce(function(acc, value) {
+            return acc + value;
+        }, 0);
     </script>
     <script>
         window.onload = function() {
@@ -267,11 +313,9 @@
             var outletSelect = document.getElementById('outletSelect');
             // Inisialisasi sebuah Set untuk melacak nama-nama outlet yang sudah ada
             var outletNamesSet = new Set();
-
             // Loop melalui data outlet
             responseDataMonthly.dataset.forEach(function(outlet) {
                 var outletName = outlet.label;
-
                 // Periksa apakah nama outlet sudah ada di Set
                 if (!outletNamesSet.has(outletName)) {
                     // Jika tidak, tambahkan nama outlet ke Set dan ke elemen <select>
@@ -1006,6 +1050,90 @@
                         backgroundColor: gradientStroke1,
                         fill: true,
                         data: totalPenjualanDaily.map(value => parseFloat(
+                            value)), // Konversi data string ke float
+                        maxBarThickness: 6
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            // Chart Hourly
+            var ctx7 = document.getElementById("chart-line-hourly").getContext("2d");
+            var gradientStroke1 = ctx7.createLinearGradient(0, 230, 0, 50);
+            gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+            gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+            gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
+
+            var allOutletDataHourly = responseDataHourly.dataset.map(outlet => outlet.data);
+            var totalPenjualanHourly = allOutletDataHourly[0];
+
+            var myChart7 = new Chart(ctx7, {
+                type: "line",
+                data: {
+                    labels: responseDataHourly.labels,
+                    datasets: [{
+                        label: "Average Hourly Transactions",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#cb0c9f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke1,
+                        fill: true,
+                        data: totalPenjualanHourly.map(value => parseFloat(
                             value)), // Konversi data string ke float
                         maxBarThickness: 6
                     }],
