@@ -121,11 +121,11 @@
                             <span class="font-weight-bold">Transactions</span>
                         </p>
                         <p class="text-sm">
-                            <span class="font-weight-bold">AVG MONTHLY</span>
+                            <span class="font-weight-bold">AVG DATE</span>
                         </p>
                         <div>
                             <div class="chart">
-                                <canvas id="chart-line-monthly" class="chart-canvas" height="400"></canvas>
+                                <canvas id="chart-line-monthly-avg" class="chart-canvas" height="400"></canvas>
                             </div>
                         </div>
                     </div>
@@ -139,10 +139,10 @@
                             <span class="font-weight-bold">Sales</span>
                         </p>
                         <p class="text-sm">
-                            <span class="font-weight-bold">AVG MONTHLY</span>
+                            <span class="font-weight-bold">AVG DATE</span>
                         </p>
                         <div class="chart">
-                            <canvas id="chart-line-monthly-sales" class="chart-canvas" height="400"></canvas>
+                            <canvas id="chart-line-monthly-sales-avg" class="chart-canvas" height="400"></canvas>
                         </div>
                     </div>
                 </div>
@@ -234,6 +234,7 @@
     <script>
         var responseDataMonthly = {!! json_encode($dataMonthly) !!};
         var responseDataMonthlySales = {!! json_encode($dataMonthlySales) !!};
+        var responseDataMonthlyAvg = {!! json_encode($dataMonthlyAvg) !!};
         var responseDataDate = {!! json_encode($dataDate) !!};
         var responseDataDateSales = {!! json_encode($dataDateSales) !!};
         var responseDataDaily = {!! json_encode($dataDaily) !!};
@@ -241,6 +242,9 @@
         // var responseDataDailySales = {!! json_encode($dataDailySales) !!};
         var allSalesDataMonthly = responseDataMonthly.dataset.map(outlet => outlet.data);
         var allSalesDataMonthlySales = responseDataMonthlySales.dataset.map(outlet => outlet.data);
+
+        // Rata Rata
+        var allSalesDataMonthlyAvg = responseDataMonthlyAvg.dataset.map(outlet => outlet.data);
         var allSalesDataDate = responseDataDate.dataset.map(outlet => outlet.data);
         var allSalesDataDateSales = responseDataDateSales.dataset.map(outlet => outlet.data);
         var allSalesDataDaily = responseDataDaily.dataset.map(outlet => outlet.data);
@@ -255,6 +259,14 @@
             return acc + value;
         }, 0);
         var totalPenjualanMonthlySales = allSalesDataMonthlySales.reduce(function(acc, current) {
+            return current.map(function(value, index) {
+                return (acc[index] || 0) + value;
+            });
+        }, []);
+        var totalTransaksiMonthlyAvg = totalPenjualanMonthlyAvg.reduce(function(acc, value) {
+            return acc + value;
+        }, 0);
+        var totalPenjualanMonthlyAvg = allSalesDataMonthlyAvg.reduce(function(acc, current) {
             return current.map(function(value, index) {
                 return (acc[index] || 0) + value;
             });
@@ -1110,6 +1122,7 @@
                     },
                 },
             });
+
             // Chart Hourly
             var ctx7 = document.getElementById("chart-line-hourly").getContext("2d");
             var gradientStroke1 = ctx7.createLinearGradient(0, 230, 0, 50);
@@ -1195,6 +1208,90 @@
                 },
             });
 
+            // Chart MonthlyAvg
+            var ctx8 = document.getElementById("chart-line-monthly-avg").getContext("2d");
+            var gradientStroke1 = ctx8.createLinearGradient(0, 230, 0, 50);
+            gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+            gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+            gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
+
+            var allOutletDataMonthlyAvg = responseDataMonthlyAvg.dataset.map(outlet => outlet.data);
+            var totalPenjualanMonthlyAvg = allOutletDataMonthlyAvg[0];
+
+            var myChart8 = new Chart(ctx8, {
+                type: "line",
+                data: {
+                    labels: responseDataMonthlyAvg.labels,
+                    datasets: [{
+                        label: "Average MonthlyAvg Transactions",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#cb0c9f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke1,
+                        fill: true,
+                        data: totalPenjualanMonthlyAvg.map(value => parseFloat(
+                            value)), // Konversi data string ke float
+                        maxBarThickness: 6
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
         }
     </script>
 @endpush
