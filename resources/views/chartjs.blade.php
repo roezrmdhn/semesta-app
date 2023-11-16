@@ -235,21 +235,24 @@
         var responseDataMonthly = {!! json_encode($dataMonthly) !!};
         var responseDataMonthlySales = {!! json_encode($dataMonthlySales) !!};
         var responseDataMonthlyAvg = {!! json_encode($dataMonthlyAvg) !!};
+        var responseDataMonthlySalesAvg = {!! json_encode($dataMonthlySalesAvg) !!};
         var responseDataDate = {!! json_encode($dataDate) !!};
         var responseDataDateSales = {!! json_encode($dataDateSales) !!};
         var responseDataDaily = {!! json_encode($dataDaily) !!};
         var responseDataHourly = {!! json_encode($dataHourly) !!};
-        // var responseDataDailySales = {!! json_encode($dataDailySales) !!};
+        var responseDataHourlySales = {!! json_encode($dataHourlySales) !!};
+        var responseDataDailySales = {!! json_encode($dataDailySales) !!};
         var allSalesDataMonthly = responseDataMonthly.dataset.map(outlet => outlet.data);
         var allSalesDataMonthlySales = responseDataMonthlySales.dataset.map(outlet => outlet.data);
 
         // Rata Rata
+        var allSalesDataMonthlySalesAvg = responseDataMonthlySalesAvg.dataset.map(outlet => outlet.data);
         var allSalesDataMonthlyAvg = responseDataMonthlyAvg.dataset.map(outlet => outlet.data);
         var allSalesDataDate = responseDataDate.dataset.map(outlet => outlet.data);
         var allSalesDataDateSales = responseDataDateSales.dataset.map(outlet => outlet.data);
         var allSalesDataDaily = responseDataDaily.dataset.map(outlet => outlet.data);
         var allSalesDataHourly = responseDataHourly.dataset.map(outlet => outlet.data);
-        // var allSalesDataDailySales = responseDataDailySales.dataset.map(outlet => outlet.data);
+        var allSalesDataDailySales = responseDataDailySales.dataset.map(outlet => outlet.data);
         var totalPenjualanMonthly = allSalesDataMonthly.reduce(function(acc, current) {
             return current.map(function(value, index) {
                 return (acc[index] || 0) + value;
@@ -267,6 +270,14 @@
             return acc + value;
         }, 0);
         var totalPenjualanMonthlyAvg = allSalesDataMonthlyAvg.reduce(function(acc, current) {
+            return current.map(function(value, index) {
+                return (acc[index] || 0) + value;
+            });
+        }, []);
+        var totalTransaksiMonthlySalesAvg = totalPenjualanMonthlySalesAvg.reduce(function(acc, value) {
+            return acc + value;
+        }, 0);
+        var totalPenjualanMonthlySalesAvg = allSalesDataMonthlySalesAvg.reduce(function(acc, current) {
             return current.map(function(value, index) {
                 return (acc[index] || 0) + value;
             });
@@ -312,6 +323,14 @@
             });
         }, []);
         var totalTransaksiHourly = totalPenjualanHourly.reduce(function(acc, value) {
+            return acc + value;
+        }, 0);
+        var totalPenjualanHourlySales = allSalesDataHourlySales.reduce(function(acc, current) {
+            return current.map(function(value, index) {
+                return (acc[index] || 0) + value;
+            });
+        }, []);
+        var totalTransaksiHourlySales = totalPenjualanHourlySales.reduce(function(acc, value) {
             return acc + value;
         }, 0);
     </script>
@@ -1123,6 +1142,91 @@
                 },
             });
 
+            // Chart Daily Sales
+            var ctxDailySales = document.getElementById("chart-line-daily-sales").getContext("2d");
+            var gradientStroke1 = ctxDailySales.createLinearGradient(0, 230, 0, 50);
+            gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+            gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+            gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
+
+            var allOutletDataDailySales = responseDataDailySales.dataset.map(outlet => outlet.data);
+            var totalPenjualanDaily = allOutletDataDailySales[0];
+
+            var myChartDailySales = new Chart(ctxDailySales, {
+                type: "line",
+                data: {
+                    labels: responseDataDailySales.labels,
+                    datasets: [{
+                        label: "Average Daily Transactions",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#cb0c9f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke1,
+                        fill: true,
+                        data: totalPenjualanDaily.map(value => parseFloat(
+                            value)), // Konversi data string ke float
+                        maxBarThickness: 6
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
             // Chart Hourly
             var ctx7 = document.getElementById("chart-line-hourly").getContext("2d");
             var gradientStroke1 = ctx7.createLinearGradient(0, 230, 0, 50);
@@ -1137,6 +1241,91 @@
                 type: "line",
                 data: {
                     labels: responseDataHourly.labels,
+                    datasets: [{
+                        label: "Average Hourly Transactions",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#cb0c9f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke1,
+                        fill: true,
+                        data: totalPenjualanHourly.map(value => parseFloat(
+                            value)), // Konversi data string ke float
+                        maxBarThickness: 6
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            // Chart Hourly Sales
+            var ctxHourlySales = document.getElementById("chart-line-hourly-sales").getContext("2d");
+            var gradientStroke1 = ctxHourlySales.createLinearGradient(0, 230, 0, 50);
+            gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+            gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+            gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
+
+            var allOutletDataHourlySales = responseDataHourlySales.dataset.map(outlet => outlet.data);
+            var totalPenjualanHourly = allOutletDataHourlySales[0];
+
+            var myChart7 = new Chart(ctxHourlySales, {
+                type: "line",
+                data: {
+                    labels: responseDataHourlySales.labels,
                     datasets: [{
                         label: "Average Hourly Transactions",
                         tension: 0.4,
@@ -1232,6 +1421,90 @@
                         backgroundColor: gradientStroke1,
                         fill: true,
                         data: totalPenjualanMonthlyAvg.map(value => parseFloat(
+                            value)), // Konversi data string ke float
+                        maxBarThickness: 6
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                    scales: {
+                        y: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2
+                                },
+                            }
+                        },
+                        x: {
+                            grid: {
+                                drawBorder: false,
+                                display: true,
+                                drawOnChartArea: true,
+                                drawTicks: false,
+                                borderDash: [5, 5],
+                            },
+                            ticks: {
+                                display: true,
+                                padding: 10,
+                                color: '#b2b9bf',
+                                font: {
+                                    size: 11,
+                                    family: "Open Sans",
+                                    style: 'normal',
+                                    lineHeight: 2,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            // Chart MonthlySalesAvg
+            var ctxMonhtlySalesAvg = document.getElementById("chart-line-monthly-sales-avg").getContext("2d");
+            var gradientStroke1 = ctxMonhtlySalesAvg.createLinearGradient(0, 230, 0, 50);
+            gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+            gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+            gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)');
+
+            var allOutletDataMonthlySalesAvg = responseDataMonthlySalesAvg.dataset.map(outlet => outlet.data);
+            var totalPenjualanMonthlySalesAvg = allOutletDataMonthlySalesAvg[0];
+
+            var myChartMonthlySalesAvg = new Chart(ctxMonhtlySalesAvg, {
+                type: "line",
+                data: {
+                    labels: responseDataMonthlySalesAvg.labels,
+                    datasets: [{
+                        label: "Average MonthlySalesAvg Transactions",
+                        tension: 0.4,
+                        borderWidth: 0,
+                        pointRadius: 0,
+                        borderColor: "#cb0c9f",
+                        borderWidth: 3,
+                        backgroundColor: gradientStroke1,
+                        fill: true,
+                        data: totalPenjualanMonthlySalesAvg.map(value => parseFloat(
                             value)), // Konversi data string ke float
                         maxBarThickness: 6
                     }],

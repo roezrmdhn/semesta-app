@@ -50,21 +50,25 @@ Route::get('/semua', function () {
 	$responseMonthly = Http::get('http://8.219.80.74:3000/transactions/charts?start=2023-04-20&format=chartjs&type=monthly');
 	$responseMonthlySales = Http::get('http://8.219.80.74:3000/transactions/charts?start=2023-04-20&format=chartjs&type=monthly&total_of=transaction');
 	$responseMonthlyAvg = Http::get('http://8.219.80.74:3000/transactions/chart-monthly');
+	$responseMonthlySalesAvg = Http::get('http://8.219.80.74:3000/transactions/chart-monthly?total_of=transaction');
 	$responseDate = Http::get('http://8.219.80.74:3000/transactions/charts?start=2023-04-20&format=chartjs&type=daily');
 	$responseDateSales = Http::get('http://8.219.80.74:3000/transactions/charts?start=2023-10-10&format=chartjs&type=daily&total_of=transaction');
 	$responseDaily = Http::get('http://8.219.80.74:3000/transactions/chart-weekly');
-	$responseDailySales = Http::get('http://8.219.80.74:3000/transactions/chart-weekly');
+	$responseDailySales = Http::get('http://8.219.80.74:3000/transactions/chart-weekly?total_of=transaction');
 	$responseHourly = Http::get('http://8.219.80.74:3000/transactions/chart-hourly');
+	$responseHourlySales = Http::get('http://8.219.80.74:3000/transactions/chart-hourly?total_of=transaction');
 	$dataMonthly = $responseMonthly->json();
 	$dataMonthlySales = $responseMonthlySales->json();
 	$dataMonthlyAvg = $responseMonthlyAvg->json();
+	$dataMonthlySalesAvg = $responseMonthlySalesAvg->json();
 	$dataDate = $responseDate->json();
 	$dataDateSales = $responseDateSales->json();
 	$dataDaily = $responseDaily->json();
 	$dataDailySales = $responseDailySales->json();
 	$dataHourly = $responseHourly->json();
+	$dataHourlySales = $responseHourlySales->json();
 	// dd($responseDateSales);
-	return view('chartjs', ['dataMonthly' => $dataMonthly, 'dataMonthlySales' => $dataMonthlySales, 'dataMonthlyAvg' => $dataMonthlyAvg, 'dataDate' => $dataDate, 'dataDateSales' => $dataDateSales, 'dataDaily' => $dataDaily, 'dataDailySales' => $dataDailySales, 'dataHourly' => $dataHourly]);
+	return view('chartjs', ['dataMonthly' => $dataMonthly, 'dataMonthlySales' => $dataMonthlySales, 'dataMonthlyAvg' => $dataMonthlyAvg, 'dataMonthlySalesAvg' => $dataMonthlySalesAvg, 'dataDate' => $dataDate, 'dataDateSales' => $dataDateSales, 'dataDaily' => $dataDaily, 'dataDailySales' => $dataDailySales, 'dataHourly' => $dataHourly, 'dataHourlySales' => $dataHourlySales]);
 });
 
 Route::get('billing', function () {
