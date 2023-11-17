@@ -101,24 +101,27 @@
                             </div> --}}
                             <div class="form-group">
                                 <label for="outletSelect">Pilih Outlet:</label>
-                                <select id="outletSelect" class="outletSelect" name="outlet[]" multiple="multiple">
+                                <select id="outletSelect" class="outletSelect form-control md-2" name="outlet[]"
+                                    multiple="multiple">
                                     <option value="Pilih Outlet" disabled>Pilih Outlet</option>
                                 </select>
                             </div>
 
                         </div>
+                        <div class="col-md-2">
 
+                        </div>
                         <div class="col-md-2 mt-4">
-                            <button id="filterButton" class="btn bg-gradient-primary mt-2"><i class="fa fa-filter"
+                            <button id="filterButton" class="btn bg-gradient-primary"><i class="fa fa-filter"
                                     aria-hidden="true"></i> Filter</button>
                             <button id="resetButton" class="btn bg-gradient-danger"><i class="fa fa-undo"
                                     aria-hidden="true"></i>
                                 </i> Reset</button>
                         </div>
-                        <div class="col-md-2 mt-4"></div>
+                        {{-- <div class="col-md-2 mt-4"></div> --}}
 
                         <div class="col-md-2 mt-4 justify-content-end">
-                            <button id="updateButton" class="btn bg-gradient-success mt-2"><i class="fa fa-refresh"
+                            <button id="updateButton" class="btn bg-gradient-success"><i class="fa fa-refresh"
                                     aria-hidden="true"></i> Update</button>
                             <p id="countdown" class="text-small text-muted" style="font-size: 11px;"></p>
                         </div>
