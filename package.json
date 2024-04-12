@@ -15,7 +15,7 @@
         "lodash": "^4.17.19",
         "postcss": "^8.4.38",
         "resolve-url-loader": "^5.0.0",
-        "sass": "^1.74.1",
+        "sass": "^1.75.0",
         "sass-loader": "^13.3.3"
     }
 }
